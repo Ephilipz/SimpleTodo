@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:selectableItemBackground"
-    android:clickable="true"
+    android:clickable="false"
     android:focusable="true"
     android:orientation="vertical"
     android:paddingBottom="@dimen/row_padding_vertical"
@@ -11,8 +11,22 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/row_padding_vertical">
 
+    <Button
+        android:id="@+id/buttonOptions"
+        android:layout_width="10dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="5dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:text="@string/_8942"
+        android:textAppearance="?android:textAppearanceLarge" />
+
     <TextView
         android:id="@+id/todoTitle"
+        android:text="placeholder Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -23,9 +37,12 @@
         android:id="@+id/todoCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+        android:layout_alignEnd="@+id/buttonOptions"
+        android:layout_alignRight="@+id/buttonOptions"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="20dp"
+        android:clickable="false" />
 
 
 </RelativeLayout>

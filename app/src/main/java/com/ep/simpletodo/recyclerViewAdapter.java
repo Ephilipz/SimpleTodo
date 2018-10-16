@@ -1,32 +1,29 @@
 package com.ep.simpletodo;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapter.customViewHolder> {
 
     private List<Todo> todoList;
+    private Context mContext;
 
-    //provide a reference to the view for each data item
-    public static class customViewHolder extends RecyclerView.ViewHolder {
-        public TextView todoTitle_tv;
-        public CheckBox todoCheck_cb;
 
-        public customViewHolder(View view) {
-            super(view);
-            todoTitle_tv = view.findViewById(R.id.todoTitle);
-            todoCheck_cb = view.findViewById(R.id.todoCheckbox);
-        }
-    }
-
-    public recyclerViewAdapter(List<Todo> todoList) {
+    public recyclerViewAdapter(List<Todo> todoList, Context context) {
         this.todoList = todoList;
+        mContext = context;
     }
 
     //create new view
@@ -37,15 +34,72 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         return new customViewHolder(itemView);
     }
 
+    //provide a reference to the view for each data item
+
     @Override
-    public void onBindViewHolder(customViewHolder holder, int i) {
-        Todo todo = todoList.get(i);
+    public void onBindViewHolder(final customViewHolder holder, int i) {
+        final Todo todo = todoList.get(i);
         holder.todoTitle_tv.setText(todo.getTodo_name());
-        holder.todoCheck_cb.setChecked(false);
+        final Button optionsButton = holder.optionsButton;
+        //if options button is clicked
+        holder.optionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(mContext, optionsButton);
+                popupMenu.inflate(R.menu.recyclerview_item_menu);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.action_editItem:
+                                //TODO: edit item
+                                return true;
+                            case R.id.action_deleteItem:
+                                todoList.remove(holder.getAdapterPosition());
+                                notifyItemRemoved(holder.getAdapterPosition());
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
+        //if row is clicked
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "you checked off: " + todo.getTodo_name(), Toast.LENGTH_SHORT).show();
+                holder.todoCheck_cb.setChecked(!todo.getIsChecked());
+                todo.setIsChecked(!todo.getIsChecked());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return todoList.size();
+    }
+
+    public void updateList(List<Todo> newList) {
+        todoList = new ArrayList<>();
+        todoList = newList;
+        notifyDataSetChanged();
+    }
+
+    public class customViewHolder extends RecyclerView.ViewHolder {
+        public TextView todoTitle_tv;
+        public CheckBox todoCheck_cb;
+        public Button optionsButton;
+        public View mView;
+
+        public customViewHolder(View view) {
+            super(view);
+            todoTitle_tv = view.findViewById(R.id.todoTitle);
+            todoCheck_cb = view.findViewById(R.id.todoCheckbox);
+            optionsButton = view.findViewById(R.id.buttonOptions);
+            mView = itemView;
+        }
     }
 }

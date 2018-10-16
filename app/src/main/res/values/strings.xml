@@ -80,4 +80,8 @@
     <string name="enter_todo_hint">Enter todo name</string>
     <string name="input_todo_name_hint">Enter the name of the task</string>
     <string name="done">done</string>
+    <string name="enter_extra_notes">Enter any extra notes</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="_8942">⋮</string>
 </resources>

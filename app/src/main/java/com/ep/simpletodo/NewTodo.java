@@ -12,7 +12,9 @@ import android.widget.EditText;
 
 public class NewTodo extends AppCompatActivity {
     public static final String TASK_NAME_ST = "task_name_string";
+    public static final String TASK_NOTES_ST = "task_notes_string";
     private EditText taskName_et;
+    private EditText taskNotes_et;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +30,8 @@ public class NewTodo extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //set taskName to new task name from the EditText
         taskName_et = findViewById(R.id.taskName_tv);
+        taskNotes_et = findViewById(R.id.taskNotes_et);
     }
 
     @Override
@@ -49,13 +51,17 @@ public class NewTodo extends AppCompatActivity {
     }
 
     private boolean addTodo() {
-        String taskName = taskName_et.getText().toString().trim().replaceAll(" +", " ");
+        String taskName = taskName_et.getText().toString()
+                .trim().replaceAll(" +", " ");
+        String notes = taskNotes_et.getText().toString();
         if (taskName.isEmpty()) {
             taskName_et.setError("Task name cannot be empty");
             return false;
         }
+
         Intent returnIntent = new Intent();
         returnIntent.putExtra(TASK_NAME_ST, taskName);
+        returnIntent.putExtra(TASK_NOTES_ST, notes);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
         return true;

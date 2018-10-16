@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".NewTodo">
 
     <android.support.v7.widget.Toolbar
@@ -15,13 +16,70 @@
         android:theme="@style/ThemeOverlay.AppCompat"
         app:title="Add a new todo" />
 
-    <EditText
-        android:id="@+id/taskName_tv"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/newTodo_toolbar"
-        android:hint="@string/input_todo_name_hint"
-        android:padding="16dp"
-        android:textSize="22sp" />
+        android:layout_height="wrap_content">
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/taskName_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
+                android:backgroundTint="@color/colorAccent"
+                android:fontFamily="@font/quicksand_medium"
+                android:hint="@string/input_todo_name_hint"
+                android:padding="16dp"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/taskNotes_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
+                android:backgroundTint="@color/colorPrimary"
+                android:fontFamily="@font/lato"
+                android:hint="@string/enter_extra_notes"
+                android:padding="16dp"
+                android:textSize="22sp" />
+
+            <CheckBox
+                android:id="@+id/date_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato"
+                android:padding="10dp"
+                android:text="Set date?"
+                android:textColor="@color/dark_gray"
+                android:textSize="20sp" />
+
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+
+            <CheckBox
+                android:id="@+id/time_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lato"
+                android:padding="10dp"
+                android:text="Set time?"
+                android:textColor="@color/dark_gray"
+                android:textSize="20sp" />
+
+            <TimePicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:headerBackground="@color/colorPrimary"
+                android:numbersSelectorColor="@color/colorPrimary"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
