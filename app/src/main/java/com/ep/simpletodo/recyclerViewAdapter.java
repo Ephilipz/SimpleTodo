@@ -40,6 +40,11 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
     public void onBindViewHolder(final customViewHolder holder, int i) {
         final Todo todo = todoList.get(i);
         holder.todoTitle_tv.setText(todo.getTodo_name());
+        holder.todoDate_tv.setText(null);
+        if (todo.isHasDate())
+            holder.todoDate_tv.setText(todo.getDate());
+        if (todo.isHasTime())
+            holder.todoDate_tv.append(" at " + todo.getTime());
         final Button optionsButton = holder.optionsButton;
         //if options button is clicked
         holder.optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +57,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_editItem:
-                                //TODO: edit item
+                                openEditActivity();
                                 return true;
                             case R.id.action_deleteItem:
                                 todoList.remove(holder.getAdapterPosition());
@@ -77,6 +82,10 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         });
     }
 
+    private void openEditActivity() {
+        //TODO: open edit todo activity
+    }
+
     @Override
     public int getItemCount() {
         return todoList.size();
@@ -92,6 +101,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         public TextView todoTitle_tv;
         public CheckBox todoCheck_cb;
         public Button optionsButton;
+        public TextView todoDate_tv;
         public View mView;
 
         public customViewHolder(View view) {
@@ -99,6 +109,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
             todoTitle_tv = view.findViewById(R.id.todoTitle);
             todoCheck_cb = view.findViewById(R.id.todoCheckbox);
             optionsButton = view.findViewById(R.id.buttonOptions);
+            todoDate_tv = view.findViewById(R.id.todoDate);
             mView = itemView;
         }
     }

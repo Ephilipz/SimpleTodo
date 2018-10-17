@@ -57,10 +57,11 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="20sp" />
 
-            <CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:visibility="gone" />
 
 
@@ -75,11 +76,11 @@
                 android:textSize="20sp" />
 
             <TimePicker
+                android:id="@+id/timePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:headerBackground="@color/colorPrimary"
-                android:numbersSelectorColor="@color/colorPrimary"
                 android:visibility="gone" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

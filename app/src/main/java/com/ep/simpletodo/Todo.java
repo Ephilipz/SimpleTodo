@@ -1,12 +1,10 @@
 package com.ep.simpletodo;
 
-
-import java.util.Date;
-
 public class Todo {
     private String todo_name;
     private Boolean isChecked = false;
-    private Date date;
+    private String date;
+    private String time;
     private boolean hasDate;
     private boolean hasTime;
     private String note;
@@ -39,11 +37,35 @@ public class Todo {
         this.note = note;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    public boolean isHasDate() {
+        return hasDate;
+    }
+
+    public void setHasDate(boolean hasDate) {
+        this.hasDate = hasDate;
+    }
+
+    public boolean isHasTime() {
+        return hasTime;
+    }
+
+    public void setHasTime(boolean hasTime) {
+        this.hasTime = hasTime;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
