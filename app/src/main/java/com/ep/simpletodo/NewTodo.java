@@ -18,18 +18,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class NewTodo extends AppCompatActivity implements View.OnClickListener {
-    public static final String TASK_NAME_ST = "task_name_string";
-    public static final String TASK_NOTES_ST = "task_notes_string";
-    public static final String TASK_DATE_ST = "task_date_string";
-    public static final String TASK_TIME_ST = "task_time_string";
-    public static final String TIME_CHECK_ST = "task_time_check_string";
-    public static final String DATE_CHECK_ST = "task_date_check_string";
+    public static final String TASK_ID = "ITEM_ID";
 
     private EditText taskName_et;
     private EditText taskNotes_et;
     public static final String dateFormat = "DD/MM/yyyy";
     public static final String timeFormat = "HH:mm";
-    Todo todo = new Todo(null);
+    Todo todo;
     private CheckBox timeCheck, dateCheck;
     private TimePicker timePicker;
     private DatePicker datePicker;
@@ -119,14 +114,7 @@ public class NewTodo extends AppCompatActivity implements View.OnClickListener {
         }
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(TASK_NAME_ST, taskName);
-        returnIntent.putExtra(TASK_NOTES_ST, notes);
-        if (timeCheck.isChecked())
-            returnIntent.putExtra(TASK_TIME_ST, todo.getTime());
-        if (dateCheck.isChecked())
-            returnIntent.putExtra(TASK_DATE_ST, todo.getDate());
-        returnIntent.putExtra(TIME_CHECK_ST, timeCheck.isChecked());
-        returnIntent.putExtra(DATE_CHECK_ST, dateCheck.isChecked());
+        returnIntent.putExtra(TASK_ID, todo);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
         return true;

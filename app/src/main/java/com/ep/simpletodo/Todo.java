@@ -1,6 +1,9 @@
 package com.ep.simpletodo;
 
-public class Todo {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Todo implements Parcelable {
     private String todo_name;
     private Boolean isChecked = false;
     private String date;
@@ -67,5 +70,43 @@ public class Todo {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public static final Parcelable.Creator<Todo> CREATOR = new Parcelable.Creator<Todo>() {
+        @Override
+        public Todo createFromParcel(Parcel source) {
+            return new Todo(source);
+        }
+
+        @Override
+        public Todo[] newArray(int size) {
+            return new Todo[size];
+        }
+    };
+
+    protected Todo(Parcel in) {
+        this.todo_name = in.readString();
+        this.isChecked = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.date = in.readString();
+        this.time = in.readString();
+        this.hasDate = in.readByte() != 0;
+        this.hasTime = in.readByte() != 0;
+        this.note = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.todo_name);
+        dest.writeValue(this.isChecked);
+        dest.writeString(this.date);
+        dest.writeString(this.time);
+        dest.writeByte(this.hasDate ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasTime ? (byte) 1 : (byte) 0);
+        dest.writeString(this.note);
     }
 }

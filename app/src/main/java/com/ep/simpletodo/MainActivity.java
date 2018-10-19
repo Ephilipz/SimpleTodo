@@ -16,12 +16,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
@@ -103,50 +99,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TODO_REQUEST_CODE && resultCode == RESULT_OK) {
-            String passedString = data.getStringExtra(NewTodo.TASK_NAME_ST);
-            String notes = data.getStringExtra(NewTodo.TASK_NOTES_ST);
-            boolean hasTime = data.getBooleanExtra(NewTodo.TIME_CHECK_ST, false);
-            boolean hasDate = data.getBooleanExtra(NewTodo.DATE_CHECK_ST, false);
-            String date = null;
-            String time = null;
-            if (hasDate)
-                date = data.getStringExtra(NewTodo.TASK_DATE_ST);
-            if (hasTime)
-                time = data.getStringExtra(NewTodo.TASK_TIME_ST);
-            newTodo(passedString, notes, hasTime, hasDate, date, time);
+            assert data != null;
+            Todo todo = data.getParcelableExtra(NewTodo.TASK_ID);
+            todoList.add(todo);
         }
     }
 
-    private void newTodo(String passedString, String notes, boolean hasTime, boolean hasDate, String date, String time) {
-        Todo todo = new Todo(passedString);
-        todo.setHasDate(hasDate);
-        todo.setHasTime(hasTime);
-        if (hasDate && date != null) {
-            date = convertDateFromat(NewTodo.dateFormat, "MMM-dd", date);
-            todo.setDate(date);
-        }
-        if (hasTime && time != null) {
-            time = convertDateFromat(NewTodo.timeFormat, "hh:mm a", time);
-            todo.setTime(time);
-        }
-        todo.setNote(notes);
-        todoList.add(todo);
-        mAdapter.notifyDataSetChanged();
-        if (notes.isEmpty())
-            Toast.makeText(this, "no notes to be added", Toast.LENGTH_SHORT).show();
-    }
-
-    public String convertDateFromat(String oldFormat, String newFormat, String date) {
-        SimpleDateFormat format = new SimpleDateFormat(oldFormat);
-        Date newDate = null;
-        try {
-            newDate = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        format = new SimpleDateFormat(newFormat);
-        return format.format(newDate);
-    }
 
     @Override
     public boolean onQueryTextSubmit(String s) {

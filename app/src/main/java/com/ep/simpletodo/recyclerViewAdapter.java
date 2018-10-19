@@ -12,7 +12,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapter.customViewHolder> {
@@ -41,10 +44,14 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         final Todo todo = todoList.get(i);
         holder.todoTitle_tv.setText(todo.getTodo_name());
         holder.todoDate_tv.setText(null);
-        if (todo.isHasDate())
-            holder.todoDate_tv.setText(todo.getDate());
-        if (todo.isHasTime())
-            holder.todoDate_tv.append(" at " + todo.getTime());
+        if (todo.isHasDate()) {
+            String date = convertDateFormat(NewTodo.dateFormat, "MMM dd", todo.getDate());
+            holder.todoDate_tv.setText(date);
+        }
+        if (todo.isHasTime()) {
+            String time = convertDateFormat(NewTodo.timeFormat, "hh:mm a", todo.getTime());
+            holder.todoDate_tv.append(" at " + time);
+        }
         final Button optionsButton = holder.optionsButton;
         //if options button is clicked
         holder.optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +87,18 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
                 todo.setIsChecked(!todo.getIsChecked());
             }
         });
+    }
+
+    public String convertDateFormat(String oldFormat, String newFormat, String date) {
+        SimpleDateFormat format = new SimpleDateFormat(oldFormat);
+        Date newDate = null;
+        try {
+            newDate = format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        format = new SimpleDateFormat(newFormat);
+        return format.format(newDate);
     }
 
     private void openEditActivity() {
