@@ -53,18 +53,30 @@ public class NewTodo extends AppCompatActivity implements View.OnClickListener {
         dateCheck.setOnClickListener(this);
         timeCheck.setOnClickListener(this);
 
+        todo = new Todo("");
+
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.date_cb:
-                datePicker.setVisibility(View.VISIBLE);
-                todo.setHasDate(dateCheck.isChecked());
+                if (dateCheck.isChecked()) {
+                    datePicker.setVisibility(View.VISIBLE);
+                    todo.setHasDate(true);
+                } else {
+                    datePicker.setVisibility(View.GONE);
+                    todo.setHasDate(false);
+                }
                 return;
             case R.id.time_cb:
-                timePicker.setVisibility(View.VISIBLE);
-                todo.setHasTime(timeCheck.isChecked());
+                if (timeCheck.isChecked()) {
+                    timePicker.setVisibility(View.VISIBLE);
+                    todo.setHasTime(true);
+                } else {
+                    timePicker.setVisibility(View.GONE);
+                    todo.setHasTime(false);
+                }
 
         }
     }
@@ -94,7 +106,7 @@ public class NewTodo extends AppCompatActivity implements View.OnClickListener {
             taskName_et.setError("Task name cannot be empty");
             return false;
         }
-        todo.setTodo_name(taskName);
+        todo = new Todo(taskName);
         todo.setNote(notes);
         if (dateCheck.isChecked()) {
             int month = datePicker.getMonth();
