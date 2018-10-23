@@ -54,7 +54,6 @@ public class NewTodo extends AppCompatActivity implements View.OnClickListener {
         timeCheck.setOnClickListener(this);
 
         todo = new Todo("");
-
     }
 
     @Override
