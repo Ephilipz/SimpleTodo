@@ -1,6 +1,7 @@
 package com.ep.simpletodo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -47,8 +48,6 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         if (todo.isHasDate()) {
             String date = convertDateFormat(NewTodo.dateFormat, "MMM dd", todo.getDate());
             holder.todoDate_tv.setText(date);
-        }
-        if (todo.isHasTime()) {
             String time = convertDateFormat(NewTodo.timeFormat, "hh:mm a", todo.getTime());
             holder.todoDate_tv.append(" at " + time);
         }
@@ -64,7 +63,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_editItem:
-                                openEditActivity();
+                                openEditActivity(todoList.get(holder.getAdapterPosition()));
                                 return true;
                             case R.id.action_deleteItem:
                                 todoList.remove(holder.getAdapterPosition());
@@ -101,8 +100,10 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         return format.format(newDate);
     }
 
-    private void openEditActivity() {
-        //TODO: open edit todo activity
+    private void openEditActivity(Todo todo) {
+        Intent intent = new Intent(mContext, EditTodo.class);
+        intent.putExtra(NewTodo.TASK_ID, todo);
+        mContext.startActivity(intent);
     }
 
     @Override

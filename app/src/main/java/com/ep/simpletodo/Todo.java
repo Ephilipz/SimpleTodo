@@ -9,7 +9,6 @@ public class Todo implements Parcelable {
     private String date;
     private String time;
     private boolean hasDate;
-    private boolean hasTime;
     private String note;
 
     public Todo(String todo_name) {
@@ -56,14 +55,6 @@ public class Todo implements Parcelable {
         this.hasDate = hasDate;
     }
 
-    public boolean isHasTime() {
-        return hasTime;
-    }
-
-    public void setHasTime(boolean hasTime) {
-        this.hasTime = hasTime;
-    }
-
     public String getTime() {
         return time;
     }
@@ -90,7 +81,6 @@ public class Todo implements Parcelable {
         this.date = in.readString();
         this.time = in.readString();
         this.hasDate = in.readByte() != 0;
-        this.hasTime = in.readByte() != 0;
         this.note = in.readString();
     }
 
@@ -106,7 +96,6 @@ public class Todo implements Parcelable {
         dest.writeString(this.date);
         dest.writeString(this.time);
         dest.writeByte(this.hasDate ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.hasTime ? (byte) 1 : (byte) 0);
         dest.writeString(this.note);
     }
 }

@@ -37,6 +37,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ep.simpletodo.MainActivity" />
         </activity>
+        <activity android:name=".EditTodo">
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ep.simpletodo.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
