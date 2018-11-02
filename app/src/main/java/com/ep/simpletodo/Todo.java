@@ -3,17 +3,27 @@ package com.ep.simpletodo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.UUID;
+
 public class Todo implements Parcelable {
     private String todo_name;
+    public static final Creator<Todo> CREATOR = new Creator<Todo>() {
+        @Override
+        public Todo createFromParcel(Parcel source) {
+            return new Todo(source);
+        }
+
+        @Override
+        public Todo[] newArray(int size) {
+            return new Todo[size];
+        }
+    };
     private Boolean isChecked = false;
     private String date;
     private String time;
     private boolean hasDate;
     private String note;
-
-    public Todo(String todo_name) {
-        this.todo_name = todo_name;
-    }
+    private String task_id;
 
     public String getTodo_name() {
         return todo_name;
@@ -63,25 +73,24 @@ public class Todo implements Parcelable {
         this.time = time;
     }
 
-    public static final Parcelable.Creator<Todo> CREATOR = new Parcelable.Creator<Todo>() {
-        @Override
-        public Todo createFromParcel(Parcel source) {
-            return new Todo(source);
-        }
+    public Todo(String todo_name) {
+        this.todo_name = todo_name;
+        this.task_id = UUID.randomUUID().toString();
+    }
 
-        @Override
-        public Todo[] newArray(int size) {
-            return new Todo[size];
-        }
-    };
 
     protected Todo(Parcel in) {
         this.todo_name = in.readString();
+        this.task_id = in.readString();
         this.isChecked = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.date = in.readString();
         this.time = in.readString();
         this.hasDate = in.readByte() != 0;
         this.note = in.readString();
+    }
+
+    public String getTask_id() {
+        return task_id;
     }
 
     @Override
@@ -92,6 +101,7 @@ public class Todo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.todo_name);
+        dest.writeString(this.task_id);
         dest.writeValue(this.isChecked);
         dest.writeString(this.date);
         dest.writeString(this.time);

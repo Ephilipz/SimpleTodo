@@ -4,6 +4,8 @@ package com.ep.simpletodo;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.ep.simpletodo.database.DBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<Todo> todoList;
     private FloatingActionButton fab_add;
 
+    SQLiteDatabase database;
+
     //request code to retrieve the new task from NewTodo activity
     public static final int TODO_REQUEST_CODE = 1;
 
@@ -51,6 +58,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //instantiates the SQL database
+        SQLiteOpenHelper dbHelper = new DBHelper(this);
+        database = dbHelper.getWritableDatabase();
+        //add toast message to check if this happened successfully
+        Toast.makeText(this, "Database acquired", Toast.LENGTH_SHORT).show();
 
         fab_add = findViewById(R.id.fab_add);
         fab_add.setOnClickListener(this);
