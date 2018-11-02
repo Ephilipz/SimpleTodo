@@ -1,5 +1,6 @@
 package com.ep.simpletodo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -16,6 +17,11 @@ import android.widget.TimePicker;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * @author Eesaa Philips
+ * @version 1.0
+ * @since 1.0
+ */
 public class EditTodo extends AppCompatActivity implements View.OnClickListener {
     public static final String deleteItemID = "DELETE_ITEM_ID";
     public static final String EDIT_TASK_ID = "EDITED_TASK_ID";
@@ -69,7 +75,8 @@ public class EditTodo extends AppCompatActivity implements View.OnClickListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                return editTodo();
+                editTodo();
+                return true;
             case R.id.action_deleteItem:
                 return deleteItem();
             default:
@@ -82,14 +89,14 @@ public class EditTodo extends AppCompatActivity implements View.OnClickListener 
         return true;
     }
 
-    private boolean editTodo() {
+    private void editTodo() {
         Calendar calendar = Calendar.getInstance();
         String taskName = taskName_et.getText().toString()
                 .trim().replaceAll(" +", " ");
         String notes = taskNotes_et.getText().toString();
         if (taskName.isEmpty()) {
             taskName_et.setError("Task name cannot be empty");
-            return false;
+            return;
         }
         todo.setTodo_name(taskName);
         todo.setNote(notes);
@@ -109,11 +116,16 @@ public class EditTodo extends AppCompatActivity implements View.OnClickListener 
         }
 
         intent.putExtra(EDIT_TASK_ID, todo);
-        startActivity(intent);
+        intent.putExtra(recyclerViewAdapter.TODO_POSITION, getIntent().getExtras().getInt(recyclerViewAdapter.TODO_POSITION));
+        setResult(Activity.RESULT_OK, intent);
         finish();
-        return true;
     }
 
+    /**
+     * Handles clicks on view
+     *
+     * @param view : clicked view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

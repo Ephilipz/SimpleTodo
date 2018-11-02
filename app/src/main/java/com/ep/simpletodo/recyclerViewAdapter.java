@@ -1,5 +1,6 @@
 package com.ep.simpletodo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -19,18 +20,37 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Eesaa Philips
+ * @version 1.0
+ * @since 1.0
+ */
 public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapter.customViewHolder> {
 
     private List<Todo> todoList;
     private Context mContext;
 
+    //used to communicate the task's position in the list
+    public static final String TODO_POSITION = "TODO_POS";
 
+    /**
+     * Constructor of recyclerViewAdapter
+     *
+     * @param todoList : the List of todos
+     * @param context  : context of initial activity
+     */
     public recyclerViewAdapter(List<Todo> todoList, Context context) {
         this.todoList = todoList;
         mContext = context;
     }
 
-    //create new view
+    /**
+     * Inflates the todo_list_item xml layout
+     *
+     * @param parent   : the parent viewGroup of the layout
+     * @param viewType : the type of the view to be inflated
+     * @see RecyclerView.Adapter
+     */
     @Override
     public recyclerViewAdapter.customViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_item, parent, false);
@@ -38,8 +58,13 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         return new customViewHolder(itemView);
     }
 
-    //provide a reference to the view for each data item
 
+    /**
+     * This onCreate method is started automatically when the app starts
+     *
+     * @param holder : customViewHolder that contains the task
+     * @param i      : portion of holder
+     */
     @Override
     public void onBindViewHolder(final customViewHolder holder, int i) {
         final Todo todo = todoList.get(i);
@@ -52,7 +77,8 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
             holder.todoDate_tv.append(" at " + time);
         }
         final Button optionsButton = holder.optionsButton;
-        //if options button is clicked
+
+        //Handle options button click
         holder.optionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +89,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.action_editItem:
-                                openEditActivity(todoList.get(holder.getAdapterPosition()));
+                                openEditActivity(todoList.get(holder.getAdapterPosition()), holder.getAdapterPosition());
                                 return true;
                             case R.id.action_deleteItem:
                                 todoList.remove(holder.getAdapterPosition());
@@ -88,6 +114,14 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         });
     }
 
+    /**
+     * Converts {@link SimpleDateFormat}
+     *
+     * @param oldFormat : the initial format
+     * @param newFormat : the new format
+     * @param date      : the date to be converted
+     * @return converted date
+     */
     public String convertDateFormat(String oldFormat, String newFormat, String date) {
         SimpleDateFormat format = new SimpleDateFormat(oldFormat);
         Date newDate = null;
@@ -100,10 +134,16 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         return format.format(newDate);
     }
 
-    private void openEditActivity(Todo todo) {
+    /**
+     * Starts {@link EditTodo} from {@link MainActivity} using EDIT_TODO_REQUEST_CODE
+     *
+     * @param todo : the todo to be passed to the {@link EditTodo} activity
+     */
+    private void openEditActivity(Todo todo, int pos) {
         Intent intent = new Intent(mContext, EditTodo.class);
         intent.putExtra(NewTodo.TASK_ID, todo);
-        mContext.startActivity(intent);
+        intent.putExtra(TODO_POSITION, pos);
+        ((Activity) mContext).startActivityForResult(intent, MainActivity.EDIT_TODO_REQUEST_CODE);
     }
 
     @Override
@@ -111,6 +151,11 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         return todoList.size();
     }
 
+    /**
+     * Updates todoList to newList
+     *
+     * @param newList : the new List that todoList should be set to
+     */
     public void updateList(List<Todo> newList) {
         todoList = new ArrayList<>();
         todoList = newList;
@@ -124,6 +169,11 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
         public TextView todoDate_tv;
         public View mView;
 
+        /**
+         * Constructor binds all the elements from todo_list_item
+         *
+         * @param view : the view that contains the elements
+         */
         public customViewHolder(View view) {
             super(view);
             todoTitle_tv = view.findViewById(R.id.todoTitle);

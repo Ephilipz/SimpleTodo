@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
                 android:padding="10dp"
-                android:text="Set date?"
+                android:text="@string/set_date"
                 android:textColor="@color/dark_gray"
                 android:textSize="20sp" />
 
