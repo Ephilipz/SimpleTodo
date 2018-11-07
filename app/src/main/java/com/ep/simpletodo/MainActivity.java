@@ -2,10 +2,10 @@ package com.ep.simpletodo;
 
 
 import android.app.SearchManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,9 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.ep.simpletodo.database.DBHelper;
+import com.ep.simpletodo.database.AppDatabase;
+import com.ep.simpletodo.database.TodoViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +36,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private RecyclerView mRecyclerView;
     private recyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Todo> todoList;
     private FloatingActionButton fab_add;
 
-    SQLiteDatabase database;
+    private TodoViewModel mTodoViewModel;
 
     //request code to retrieve the new task from NewTodo activity
     public static final int TODO_REQUEST_CODE = 1;
@@ -51,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
      * This onCreate method is started automatically when the app starts
      *
      * @return null
-     * @throws
      * @param: savedInstance
      */
     @Override
@@ -59,19 +57,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //instantiates the SQL database
-        SQLiteOpenHelper dbHelper = new DBHelper(this);
-        database = dbHelper.getWritableDatabase();
-        //add toast message to check if this happened successfully
-        Toast.makeText(this, "Database acquired", Toast.LENGTH_SHORT).show();
-
         fab_add = findViewById(R.id.fab_add);
         fab_add.setOnClickListener(this);
-
-        todoList = new ArrayList<>();
-
-        todoList.add(new Todo("eat pizza"));
-        todoList.add(new Todo("eat avocados"));
 
         //creates top app bar
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -86,8 +73,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mRecyclerView.setHasFixedSize(true);
 
         //specify the adapter
-        mAdapter = new recyclerViewAdapter(todoList, this);
+        mAdapter = new recyclerViewAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        mTodoViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
+
+        mTodoViewModel.getAllTodos().observe(this, new Observer<List<Todo>>() {
+            @Override
+            public void onChanged(@Nullable List<Todo> todoList) {
+                mAdapter.updateList(todoList);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        AppDatabase.destroyInstance();
+        super.onDestroy();
 
     }
 
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             assert data != null;
             Todo todo = data.getParcelableExtra(NewTodo.TASK_ID);
             //adds retrieved task to the todoList
-            todoList.add(todo);
+            mTodoViewModel.insert(todo);
         }
 
         //check if the request code is from EditTodo
@@ -160,8 +163,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             Todo todo = data.getParcelableExtra(EditTodo.EDIT_TASK_ID);
             //updates the task at position to the new information
-            todoList.set(position, todo);
-            mAdapter.notifyDataSetChanged();
+            mTodoViewModel.update(todo);
         }
     }
 
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         String userInput = s.toLowerCase().trim();
         List<Todo> newList = new ArrayList<>();
 
-        for (Todo todo : todoList) {
+        for (Todo todo : mTodoViewModel.getAllTodos().getValue()) {
             if (todo.getTodo_name().contains(userInput)) {
                 newList.add(todo);
             }

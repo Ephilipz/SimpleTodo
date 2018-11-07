@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapter.customViewHolder> {
 
-    private List<Todo> todoList;
+    private List<Todo> todoList = Collections.emptyList();
     private Context mContext;
 
     //used to communicate the task's position in the list
@@ -36,11 +36,9 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
     /**
      * Constructor of recyclerViewAdapter
      *
-     * @param todoList : the List of todos
-     * @param context  : context of initial activity
+     * @param context : context of initial activity
      */
-    public recyclerViewAdapter(List<Todo> todoList, Context context) {
-        this.todoList = todoList;
+    public recyclerViewAdapter(Context context) {
         mContext = context;
     }
 
@@ -67,51 +65,55 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
      */
     @Override
     public void onBindViewHolder(final customViewHolder holder, int i) {
-        final Todo todo = todoList.get(i);
-        holder.todoTitle_tv.setText(todo.getTodo_name());
-        holder.todoDate_tv.setText(null);
-        if (todo.isHasDate()) {
-            String date = convertDateFormat(NewTodo.dateFormat, "MMM dd", todo.getDate());
-            holder.todoDate_tv.setText(date);
-            String time = convertDateFormat(NewTodo.timeFormat, "hh:mm a", todo.getTime());
-            holder.todoDate_tv.append(" at " + time);
-        }
-        final Button optionsButton = holder.optionsButton;
+        if (todoList != null) {
+            final Todo todo = todoList.get(i);
+            holder.todoTitle_tv.setText(todo.getTodo_name());
+            holder.todoDate_tv.setText(null);
+            if (todo.isHasDate()) {
+                String date = convertDateFormat(NewTodo.dateFormat, "MMM dd", todo.getDate());
+                holder.todoDate_tv.setText(date);
+                String time = convertDateFormat(NewTodo.timeFormat, "hh:mm a", todo.getTime());
+                holder.todoDate_tv.append(" at " + time);
+            }
+            final Button optionsButton = holder.optionsButton;
 
-        //Handle options button click
-        holder.optionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(mContext, optionsButton);
-                popupMenu.inflate(R.menu.recyclerview_item_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_editItem:
-                                openEditActivity(todoList.get(holder.getAdapterPosition()), holder.getAdapterPosition());
-                                return true;
-                            case R.id.action_deleteItem:
-                                todoList.remove(holder.getAdapterPosition());
-                                notifyItemRemoved(holder.getAdapterPosition());
-                                return true;
+            //Handle options button click
+            holder.optionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popupMenu = new PopupMenu(mContext, optionsButton);
+                    popupMenu.inflate(R.menu.recyclerview_item_menu);
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            switch (menuItem.getItemId()) {
+                                case R.id.action_editItem:
+                                    openEditActivity(todoList.get(holder.getAdapterPosition()), holder.getAdapterPosition());
+                                    return true;
+                                case R.id.action_deleteItem:
+                                    todoList.remove(holder.getAdapterPosition());
+                                    notifyItemRemoved(holder.getAdapterPosition());
+                                    return true;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-            }
-        });
+                    });
+                    popupMenu.show();
+                }
+            });
 
-        //if row is clicked
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "you checked off: " + todo.getTodo_name(), Toast.LENGTH_SHORT).show();
-                holder.todoCheck_cb.setChecked(!todo.getIsChecked());
-                todo.setIsChecked(!todo.getIsChecked());
-            }
-        });
+            //if row is clicked
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "you checked off: " + todo.getTodo_name(), Toast.LENGTH_SHORT).show();
+                    holder.todoCheck_cb.setChecked(!todo.getIsChecked());
+                    todo.setIsChecked(!todo.getIsChecked());
+                }
+            });
+        } else {
+            holder.todoTitle_tv.setText("No Todo");
+        }
     }
 
     /**
@@ -148,7 +150,9 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return todoList.size();
+        if (todoList != null)
+            return todoList.size();
+        return 0;
     }
 
     /**
@@ -157,7 +161,6 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
      * @param newList : the new List that todoList should be set to
      */
     public void updateList(List<Todo> newList) {
-        todoList = new ArrayList<>();
         todoList = newList;
         notifyDataSetChanged();
     }

@@ -1,12 +1,39 @@
 package com.ep.simpletodo;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.UUID;
 
+@Entity(tableName = "todos")
 public class Todo implements Parcelable {
-    private String todo_name;
+
+    @PrimaryKey
+    @NonNull
+    public String task_id;
+    @ColumnInfo(name = "name")
+    public String todo_name;
+    @ColumnInfo(name = "has_date")
+    public boolean hasDate = false;
+    @ColumnInfo(name = "checked")
+    public Boolean isChecked = false;
+    @ColumnInfo(name = "date")
+    public String date = null;
+    @ColumnInfo(name = "time")
+    public String time = null;
+    @ColumnInfo(name = "note")
+    public String note = null;
+
+
+    public Todo(String todo_name) {
+        this.todo_name = todo_name;
+        task_id = UUID.randomUUID().toString();
+    }
+
     public static final Creator<Todo> CREATOR = new Creator<Todo>() {
         @Override
         public Todo createFromParcel(Parcel source) {
@@ -18,12 +45,6 @@ public class Todo implements Parcelable {
             return new Todo[size];
         }
     };
-    private Boolean isChecked = false;
-    private String date;
-    private String time;
-    private boolean hasDate;
-    private String note;
-    private String task_id;
 
     public String getTodo_name() {
         return todo_name;
@@ -65,17 +86,16 @@ public class Todo implements Parcelable {
         this.hasDate = hasDate;
     }
 
+    public String getTask_id() {
+        return task_id;
+    }
+
     public String getTime() {
         return time;
     }
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public Todo(String todo_name) {
-        this.todo_name = todo_name;
-        this.task_id = UUID.randomUUID().toString();
     }
 
 
@@ -87,10 +107,6 @@ public class Todo implements Parcelable {
         this.time = in.readString();
         this.hasDate = in.readByte() != 0;
         this.note = in.readString();
-    }
-
-    public String getTask_id() {
-        return task_id;
     }
 
     @Override
@@ -109,3 +125,5 @@ public class Todo implements Parcelable {
         dest.writeString(this.note);
     }
 }
+
+
