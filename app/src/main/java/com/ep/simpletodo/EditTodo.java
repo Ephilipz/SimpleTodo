@@ -23,9 +23,8 @@ import java.util.Calendar;
  * @since 1.0
  */
 public class EditTodo extends AppCompatActivity implements View.OnClickListener {
-    public static final String deleteItemID = "DELETE_ITEM_ID";
     public static final String EDIT_TASK_ID = "EDITED_TASK_ID";
-    Intent intent;
+    public static final int RESULT_DELETE = -2;
     Todo todo;
     private EditText taskName_et;
     private EditText taskNotes_et;
@@ -53,9 +52,11 @@ public class EditTodo extends AppCompatActivity implements View.OnClickListener 
         timePicker = findViewById(R.id.timePicker);
         datePicker = findViewById(R.id.datePicker);
 
+        Calendar calendar = Calendar.getInstance();
+        datePicker.setMinDate(calendar.getTimeInMillis());
+
         dateCheck.setOnClickListener(this);
 
-        intent = new Intent(this, MainActivity.class);
         todo = getIntent().getParcelableExtra(NewTodo.TASK_ID);
 
         //set the widgets to the tasks's information
@@ -78,15 +79,16 @@ public class EditTodo extends AppCompatActivity implements View.OnClickListener 
                 editTodo();
                 return true;
             case R.id.action_deleteItem:
-                return deleteItem();
+                deleteItem();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private boolean deleteItem() {
-        intent.putExtra(deleteItemID, true);
-        return true;
+    private void deleteItem() {
+        setResult(RESULT_DELETE, new Intent(this, MainActivity.class).putExtra(EDIT_TASK_ID, todo));
+        finish();
     }
 
     private void editTodo() {
@@ -115,9 +117,7 @@ public class EditTodo extends AppCompatActivity implements View.OnClickListener 
             todo.setHasDate(true);
         }
 
-        intent.putExtra(EDIT_TASK_ID, todo);
-        intent.putExtra(recyclerViewAdapter.TODO_POSITION, getIntent().getExtras().getInt(recyclerViewAdapter.TODO_POSITION));
-        setResult(Activity.RESULT_OK, intent);
+        setResult(Activity.RESULT_OK, new Intent(this, MainActivity.class).putExtra(EDIT_TASK_ID, todo));
         finish();
     }
 

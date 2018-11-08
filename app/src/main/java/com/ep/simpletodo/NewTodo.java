@@ -49,6 +49,9 @@ public class NewTodo extends AppCompatActivity implements View.OnClickListener {
         timePicker = findViewById(R.id.timePicker);
         datePicker = findViewById(R.id.datePicker);
 
+        Calendar calendar = Calendar.getInstance();
+        datePicker.setMinDate(calendar.getTimeInMillis());
+
         dateCheck.setOnClickListener(this);
 
         todo = new Todo("");

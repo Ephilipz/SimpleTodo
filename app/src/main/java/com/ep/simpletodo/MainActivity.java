@@ -1,6 +1,7 @@
 package com.ep.simpletodo;
 
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -157,11 +158,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         //check if the request code is from EditTodo
-        else if (requestCode == EDIT_TODO_REQUEST_CODE && resultCode == RESULT_OK) {
+        else if (requestCode == EDIT_TODO_REQUEST_CODE) {
             assert data != null;
             Todo todo = data.getParcelableExtra(EditTodo.EDIT_TASK_ID);
-            //updates the task at position to the new information
-            mTodoViewModel.update(todo);
+            if (resultCode == EditTodo.RESULT_DELETE) {
+                mTodoViewModel.delete(todo);
+                mAdapter.notifyDataSetChanged();
+            } else if (resultCode == Activity.RESULT_OK)
+                mTodoViewModel.update(todo);
         }
     }
 
