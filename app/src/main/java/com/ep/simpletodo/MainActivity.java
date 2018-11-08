@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton fab_add;
 
-    private TodoViewModel mTodoViewModel;
+    public static TodoViewModel mTodoViewModel;
 
     //request code to retrieve the new task from NewTodo activity
     public static final int TODO_REQUEST_CODE = 1;
@@ -159,8 +159,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         //check if the request code is from EditTodo
         else if (requestCode == EDIT_TODO_REQUEST_CODE && resultCode == RESULT_OK) {
             assert data != null;
-            int position = data.getExtras().getInt(recyclerViewAdapter.TODO_POSITION);
-
             Todo todo = data.getParcelableExtra(EditTodo.EDIT_TASK_ID);
             //updates the task at position to the new information
             mTodoViewModel.update(todo);

@@ -91,6 +91,7 @@ public class recyclerViewAdapter extends RecyclerView.Adapter<recyclerViewAdapte
                                     openEditActivity(todoList.get(holder.getAdapterPosition()), holder.getAdapterPosition());
                                     return true;
                                 case R.id.action_deleteItem:
+                                    MainActivity.mTodoViewModel.delete(todoList.get(holder.getAdapterPosition()));
                                     todoList.remove(holder.getAdapterPosition());
                                     notifyItemRemoved(holder.getAdapterPosition());
                                     return true;
